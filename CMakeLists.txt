@@ -54,8 +54,19 @@ if(BUILD_GUI)
     endif()
 endif()
 
-# Tests
+# Tests use doctest, a single-header test framework.
+# FetchContent downloads it the first time you configure.
+include(FetchContent)
+# doctest asks for a very old CMake version. CMake 4 refuses that unless
+# we set this. Older CMake versions ignore it.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+FetchContent_Declare(doctest
+    GIT_REPOSITORY https://github.com/doctest/doctest.git
+    GIT_TAG v2.4.11
+    GIT_SHALLOW TRUE)
+FetchContent_MakeAvailable(doctest)
+
 enable_testing()
 add_executable(unit_tests tests/test_main.cpp)
-target_link_libraries(unit_tests PRIVATE core)
+target_link_libraries(unit_tests PRIVATE core doctest::doctest)
 add_test(NAME unit_tests COMMAND unit_tests)
