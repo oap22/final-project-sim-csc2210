@@ -19,7 +19,7 @@ One or two sentences: what the program does and why. (TODO)
   - [raylib](https://www.raylib.com/) 5.5: window, drawing, input
   - [raygui](https://github.com/raysan5/raygui) 4.0: buttons and sliders
 - macOS: Xcode Command Line Tools (`xcode-select --install`)
-- Windows: Visual Studio Build Tools with "Desktop development with C++"
+- Windows: MinGW-w64 g++ (for example from MSYS2) or Visual Studio Build Tools
 
 ## Build
 
@@ -28,11 +28,20 @@ cmake -S . -B build
 cmake --build build
 ```
 
+Windows with MinGW g++: tell CMake to use the MinGW tools. Without `-G`, CMake
+can pick the Visual Studio generator instead.
+
+```sh
+cmake -S . -B build -G "MinGW Makefiles"
+cmake --build build
+```
+
 ## Run
 
 ```sh
 ./build/app          # macOS / Linux
-build\Debug\app.exe  # Windows (Visual Studio generator)
+build\app.exe        # Windows, MinGW g++
+build\Debug\app.exe  # Windows, Visual Studio generator
 ```
 
 To build only the simulation logic and tests (no window, no download):
