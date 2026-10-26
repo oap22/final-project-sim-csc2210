@@ -18,6 +18,7 @@ One or two sentences: what the program does and why. (TODO)
 - Libraries (downloaded by CMake the first time you configure, no manual install):
   - [raylib](https://www.raylib.com/) 5.5: window, drawing, input
   - [raygui](https://github.com/raysan5/raygui) 4.0: buttons and sliders
+  - [doctest](https://github.com/doctest/doctest) 2.4.11: unit tests
 - macOS: Xcode Command Line Tools (`xcode-select --install`)
 - Windows: Visual Studio Build Tools with "Desktop development with C++"
 
@@ -35,7 +36,7 @@ cmake --build build
 build\Debug\app.exe  # Windows (Visual Studio generator)
 ```
 
-To build only the simulation logic and tests (no window, no download):
+To build only the simulation logic and tests (no window, no raylib download):
 
 ```sh
 cmake -S . -B build -DBUILD_GUI=OFF
