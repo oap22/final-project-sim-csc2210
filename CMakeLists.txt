@@ -19,6 +19,17 @@ endif()
 # Keeping it in a library lets the tests use the same code as the program.
 add_library(core
     src/Vec2.cpp
+    src/Position.cpp
+    src/Random.cpp
+    src/Grid.cpp
+    src/Animal.cpp
+    src/Rabbit.cpp
+    src/Fox.cpp
+    src/World.cpp
+    src/Weather.cpp
+    src/History.cpp
+    src/Simulation.cpp
+    src/BatchRunner.cpp
 )
 target_include_directories(core PUBLIC include)
 
@@ -44,7 +55,14 @@ if(BUILD_GUI)
 
     FetchContent_MakeAvailable(raylib raygui)
 
-    add_executable(app src/main.cpp)
+    add_executable(app
+        src/main.cpp
+        src/App.cpp
+        src/GridView.cpp
+        src/PopulationGraph.cpp
+        src/ControlPanel.cpp
+        src/BatchResultsView.cpp
+    )
     target_include_directories(app PRIVATE ${raygui_SOURCE_DIR}/src)
     target_link_libraries(app PRIVATE core raylib)
 
