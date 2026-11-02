@@ -2,7 +2,7 @@
 
 One or two sentences: what the program does and why. (TODO)
 
-**Team:** Owen, Partner Name (TODO)
+**Team:** Owen, Max
 **Course:** MSOE CSC 2210, term project
 
 ## Features
