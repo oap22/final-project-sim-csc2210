@@ -10,6 +10,7 @@ namespace eco {
 // Draws the live population graph.
 class PopulationGraph {
 public:
+    void setArea(Rectangle newArea);
     void draw(const History& history);
 
 private:
