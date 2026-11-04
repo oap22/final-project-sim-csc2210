@@ -7,7 +7,7 @@
 #define RAYGUI_IMPLEMENTATION // Put this in exactly one .cpp file.
 #include "raygui.h"
 
-#include "Vec2.h"
+#include "core/Vec2.h"
 
 int main() {
     InitWindow(800, 600, "Term Project");
