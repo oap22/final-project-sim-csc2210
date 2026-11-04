@@ -8,17 +8,25 @@
 
 namespace eco {
 
-// Buttons for start, stop, step, reset, the place tool, and the step limit.
+// Buttons for start, stop, step, reset, the place tool, the speed slider,
+// and the step limit.
 class ControlPanel {
 public:
+    void setArea(Rectangle newArea);
+
+    // Draws the panel and returns the button pressed this frame (or None).
     ControlAction draw(bool running);
+
     PlaceTool getSelectedTool() const;
     int getStepLimit() const;
+    float getSpeed() const; // Simulation steps per second.
 
 private:
     Rectangle area{};
-    PlaceTool selectedTool = PlaceTool::Grass;
-    int stepLimit = 1;
+    int toolIndex = 0;         // Matches the order of PlaceTool.
+    float speed = 10.0f;       // Steps per second.
+    int stepLimit = 1000;
+    bool stepLimitEditing = false;
 };
 
 } // namespace eco
