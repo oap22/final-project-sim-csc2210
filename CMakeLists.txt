@@ -77,6 +77,11 @@ if(BUILD_GUI)
     target_include_directories(app PRIVATE ${raygui_SOURCE_DIR}/src)
     target_link_libraries(app PRIVATE sim raylib)
 
+    # Copy the assets (fonts) next to the program so it finds them at run time.
+    add_custom_command(TARGET app POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:app>/assets)
+
     # raylib needs extra system frameworks on macOS.
     if(APPLE)
         target_link_libraries(app PRIVATE "-framework IOKit" "-framework Cocoa" "-framework OpenGL")
