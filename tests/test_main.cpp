@@ -4,7 +4,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "Vec2.h"
+#include "core/Vec2.h"
 
 using eco::Vec2;
 

@@ -59,12 +59,23 @@ ctest --test-dir build --output-on-failure
 
 ## Project layout
 
-| Folder     | Contents                                         |
-|------------|--------------------------------------------------|
-| `include/` | Header files (`.h`): class declarations          |
-| `src/`     | Source files (`.cpp`): class definitions, `main` |
-| `tests/`   | Unit tests                                       |
-| `docs/`    | Proposal, diagrams, slides                       |
+| Folder          | Contents                                                |
+|-----------------|---------------------------------------------------------|
+| `src/core/`     | Basic types: `Vec2`, `Position`, `Random`, `Config`     |
+| `src/world/`    | Environment: grid, tiles, world, weather                |
+| `src/entities/` | Animals: `Animal`, `Rabbit`, `Fox`                      |
+| `src/sim/`      | Simulation loop, history, batch runs                    |
+| `src/gui/`      | raylib screens and controls (only `app` uses these)     |
+| `src/main.cpp`  | Program entry point                                     |
+| `tests/`        | Unit tests                                              |
+| `docs/`         | Proposal, diagrams, slides                              |
+
+Each folder holds its `.h` and `.cpp` files together. Include with the
+folder name, for example `#include "world/World.h"`.
+
+CMake libraries: `core_util` <- `model` (world + entities) <- `sim` <- `app`.
+`world/` and `entities/` share one library because `World` and `Animal`
+include each other.
 
 ## Controls / Usage
 

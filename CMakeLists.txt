@@ -15,25 +15,36 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# "core" holds all program logic that does not draw to the screen.
-# Keeping it in a library lets the tests use the same code as the program.
-add_library(core
-    src/Vec2.cpp
-    src/Position.cpp
-    src/Random.cpp
-    src/Grid.cpp
-    src/Animal.cpp
-    src/Rabbit.cpp
-    src/Fox.cpp
-    src/World.cpp
-    src/Weather.cpp
-    src/History.cpp
-    src/Simulation.cpp
-    src/BatchRunner.cpp
+# The logic is split into libraries, one per layer. None of them uses raylib,
+# so the tests build and run without a window. Each library links only to the
+# layers below it:  core_util <- model <- sim <- app
+# "model" holds both world/ and entities/ because World and Animal include
+# each other, so they cannot be separate libraries.
+add_library(core_util
+    src/core/Vec2.cpp
+    src/core/Position.cpp
+    src/core/Random.cpp
 )
-target_include_directories(core PUBLIC include)
+target_include_directories(core_util PUBLIC src)
 
-# The GUI program. Only this target uses raylib, so "core" and the tests
+add_library(model
+    src/world/Grid.cpp
+    src/world/World.cpp
+    src/world/Weather.cpp
+    src/entities/Animal.cpp
+    src/entities/Rabbit.cpp
+    src/entities/Fox.cpp
+)
+target_link_libraries(model PUBLIC core_util)
+
+add_library(sim
+    src/sim/History.cpp
+    src/sim/Simulation.cpp
+    src/sim/BatchRunner.cpp
+)
+target_link_libraries(sim PUBLIC model)
+
+# The GUI program. Only this target uses raylib, so the logic libraries and the tests
 # build and run without a window. Turn the GUI off with: -DBUILD_GUI=OFF
 option(BUILD_GUI "Build the raylib GUI program" ON)
 if(BUILD_GUI)
@@ -57,14 +68,14 @@ if(BUILD_GUI)
 
     add_executable(app
         src/main.cpp
-        src/App.cpp
-        src/GridView.cpp
-        src/PopulationGraph.cpp
-        src/ControlPanel.cpp
-        src/BatchResultsView.cpp
+        src/gui/App.cpp
+        src/gui/GridView.cpp
+        src/gui/PopulationGraph.cpp
+        src/gui/ControlPanel.cpp
+        src/gui/BatchResultsView.cpp
     )
     target_include_directories(app PRIVATE ${raygui_SOURCE_DIR}/src)
-    target_link_libraries(app PRIVATE core raylib)
+    target_link_libraries(app PRIVATE sim raylib)
 
     # raylib needs extra system frameworks on macOS.
     if(APPLE)
@@ -86,5 +97,5 @@ FetchContent_MakeAvailable(doctest)
 
 enable_testing()
 add_executable(unit_tests tests/test_main.cpp)
-target_link_libraries(unit_tests PRIVATE core doctest::doctest)
+target_link_libraries(unit_tests PRIVATE sim doctest::doctest)
 add_test(NAME unit_tests COMMAND unit_tests)
