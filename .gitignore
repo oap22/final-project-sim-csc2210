@@ -7,6 +7,9 @@ out/
 .idea/
 .vscode/
 .vs/
+.clangd
+.cache/
+compile_commands.json
 *.swp
 
 # Compiled files

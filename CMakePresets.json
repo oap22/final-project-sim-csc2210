@@ -1,0 +1,51 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug (GUI + tests)",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_GUI": "ON"
+            }
+        },
+        {
+            "name": "debug-no-gui",
+            "displayName": "Debug (tests only, no raylib)",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_GUI": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "configurePreset": "debug",
+            "jobs": 8
+        },
+        {
+            "name": "debug-no-gui",
+            "displayName": "Debug (no GUI)",
+            "configurePreset": "debug-no-gui",
+            "jobs": 8
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "displayName": "CTest",
+            "configurePreset": "debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}

@@ -29,6 +29,10 @@ cmake -S . -B build
 cmake --build build
 ```
 
+For Cursor / clangd, configure once (`cmake --preset debug` or `cmake -S . -B build`), then
+point the language server at `build/compile_commands.json`. Local `.vscode/` and `.clangd`
+files are gitignored so each developer can keep their own editor setup.
+
 Windows with MinGW g++: tell CMake to use the MinGW tools. Without `-G`, CMake
 can pick the Visual Studio generator instead.
 
