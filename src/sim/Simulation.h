@@ -4,7 +4,9 @@
 #include "core/Config.h"
 #include "sim/History.h"
 #include "core/Random.h"
+#include "world/FillSettings.h"
 #include "world/Weather.h"
+#include "world/WeatherType.h"
 #include "world/World.h"
 
 namespace eco {
@@ -17,10 +19,13 @@ public:
     void step();
     void run(int steps);
     bool isFinished() const;
+    int getStepCount() const;
     World& getWorld();
     const History& getHistory() const;
     const Weather& getWeather() const;
     void setStepLimit(int limit);
+    void fillWorld(const FillSettings& settings);
+    void setWeather(WeatherType type, int steps);
 
 private:
     Config config;

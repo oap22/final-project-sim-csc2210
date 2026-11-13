@@ -12,7 +12,9 @@ Simulation::Simulation(const Config& config)
 }
 
 void Simulation::step() {
-    // TODO
+    weather.update(random);
+    // TODO: the rest of the step.
+    ++stepCount;
 }
 
 void Simulation::run(int /*steps*/) {
@@ -22,6 +24,10 @@ void Simulation::run(int /*steps*/) {
 bool Simulation::isFinished() const {
     // TODO
     return false;
+}
+
+int Simulation::getStepCount() const {
+    return stepCount;
 }
 
 World& Simulation::getWorld() {
@@ -41,6 +47,14 @@ const Weather& Simulation::getWeather() const {
 
 void Simulation::setStepLimit(int /*limit*/) {
     // TODO
+}
+
+void Simulation::fillWorld(const FillSettings& settings) {
+    world.fill(settings, random, config);
+}
+
+void Simulation::setWeather(WeatherType type, int steps) {
+    weather.setWeather(type, steps);
 }
 
 } // namespace eco
