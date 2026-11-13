@@ -14,6 +14,7 @@ public:
     Grid(int width, int height);
 
     Tile& at(Position pos);
+    const Tile& at(Position pos) const;
     bool inBounds(Position pos) const;
     std::vector<Position> neighbors(Position pos) const;
     int getWidth() const;
