@@ -26,35 +26,31 @@ ControlAction ControlPanel::draw(bool running) {
 
     const float x = area.x + 10;
     const float width = area.width - 20;
-    const float half = (width - 10) / 2;
-    float y = area.y + 20;
+    const float third = (width - 20) / 3;
+    float y = area.y + 24;
 
-    // Start / Stop and Step
-    if (GuiButton(Rectangle{x, y, half, kRowHeight}, running ? "Stop" : "Start")) {
+    // Start / Stop, Step, and Reset share one row.
+    if (GuiButton(Rectangle{x, y, third, kRowHeight}, running ? "Stop" : "Start")) {
         action = running ? ControlAction::Stop : ControlAction::Start;
     }
-    if (GuiButton(Rectangle{x + half + 10, y, half, kRowHeight}, "Step")) {
+    if (GuiButton(Rectangle{x + third + 10, y, third, kRowHeight}, "Step")) {
         action = ControlAction::StepOnce;
     }
-    y += kRowHeight + 10;
-
-    // Reset
-    if (GuiButton(Rectangle{x, y, width, kRowHeight}, "Reset")) {
+    if (GuiButton(Rectangle{x + 2 * (third + 10), y, third, kRowHeight}, "Reset")) {
         action = ControlAction::Reset;
     }
-    y += kRowHeight + 20;
+    y += kRowHeight + 8;
 
     // Place tool. The text order must match the PlaceTool enum.
     GuiLabel(Rectangle{x, y, width, 20}, "Place tool");
-    y += 25;
-    GuiToggleGroup(Rectangle{x, y, 56, kRowHeight}, "Grass;Plant;Rabbit;Fox;Erase", &toolIndex);
-    y += kRowHeight + 20;
+    y += 24;
+    GuiToggleGroup(Rectangle{x, y, (width - 8) / 5, kRowHeight}, "Grass;Plant;Rabbit;Fox;Erase", &toolIndex);
+    y += kRowHeight + 8;
 
-    // Speed slider
-    GuiLabel(Rectangle{x, y, width, 20}, TextFormat("Speed: %d steps/s", static_cast<int>(speed)));
-    y += 25;
-    GuiSliderBar(Rectangle{x + 40, y, width - 80, 20}, "Slow", "Fast", &speed, kMinSpeed, kMaxSpeed);
-    y += 40;
+    // Speed slider, with its label beside it.
+    GuiLabel(Rectangle{x, y, 130, kRowHeight}, TextFormat("Speed: %d steps/s", static_cast<int>(speed)));
+    GuiSliderBar(Rectangle{x + 140, y + 5, width - 140, 20}, nullptr, nullptr, &speed, kMinSpeed, kMaxSpeed);
+    y += kRowHeight + 8;
 
     // Step limit. The spinner returns true when the user clicks it,
     // which switches text editing on or off.

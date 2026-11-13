@@ -5,31 +5,20 @@
 #include "raylib.h"
 #include "raygui.h" // Declarations only. The code is built in main.cpp.
 
-#include "world/WeatherType.h"
-
 namespace eco {
 
 namespace {
 
-// Window and layout, in pixels. Grid on the left, panel and graph on the right.
+// Window and layout, in pixels. Grid with the graph under it on the left,
+// one sidebar on the right.
 constexpr int kWindowWidth = 1000;
 constexpr int kWindowHeight = 640;
-constexpr Rectangle kGridArea{10, 10, 640, 620};
-constexpr Rectangle kPanelArea{660, 10, 330, 300};
-constexpr Rectangle kGraphArea{660, 370, 330, 260};
-constexpr int kStatusX = 660;
-constexpr int kStatusY = 320;
-constexpr float kFontSize = 20.0f;
+constexpr Rectangle kGridArea{10, 10, 640, 480};
+constexpr Rectangle kGraphArea{10, 500, 640, 130};
+constexpr Rectangle kPanelArea{660, 10, 330, 204};
+constexpr Rectangle kSetupArea{660, 224, 330, 330};
+constexpr Rectangle kKeyArea{660, 564, 330, 66};
 constexpr const char* kFontFile = "assets/fonts/Lato-Regular.ttf";
-
-const char* weatherName(WeatherType type) {
-    switch (type) {
-        case WeatherType::Rain:    return "Rain";
-        case WeatherType::Drought: return "Drought";
-        case WeatherType::Normal:  return "Normal";
-    }
-    return "Normal";
-}
 
 } // namespace
 
@@ -37,6 +26,8 @@ App::App(const Config& config)
     : config(config), simulation(config), running(false), stepTimer(0.0f) {
     gridView.setArea(kGridArea);
     controls.setArea(kPanelArea);
+    setup.setArea(kSetupArea);
+    key.setArea(kKeyArea);
     graph.setArea(kGraphArea);
 }
 
@@ -71,10 +62,6 @@ void App::loadFont() {
     } else {
         font = GetFontDefault();
     }
-}
-
-void App::drawLabel(const char* text, int x, int y) {
-    DrawTextEx(font, text, Vector2{static_cast<float>(x), static_cast<float>(y)}, kFontSize, 1.0f, DARKGRAY);
 }
 
 // Holding the left mouse button paints the selected tool onto the grid.
@@ -113,23 +100,20 @@ void App::draw() {
     ClearBackground(RAYWHITE);
 
     gridView.draw(simulation.getWorld());
+    GuiGroupBox(kGraphArea, "Population");
     graph.draw(simulation.getHistory());
     ControlAction action = controls.draw(running);
+    ControlAction setupAction = setup.draw(simulation.getWeather().getType());
 
-    const auto& records = simulation.getHistory().getRecords();
-    if (!records.empty()) {
-        const PopulationCounts& now = records.back();
-        drawLabel(TextFormat("Step %d   Rabbits %d   Foxes %d", now.step, now.rabbits, now.foxes),
-                  kStatusX, kStatusY);
-    }
-    drawLabel(TextFormat("Weather: %s", weatherName(simulation.getWeather().getType())),
-              kStatusX, kStatusY + 28);
+    key.draw(simulation.getWorld().count(), simulation.getStepCount(),
+             config.gridWidth * config.gridHeight);
 
     EndDrawing();
 
     // Act on the button after the frame is drawn, so the state changes
     // do not happen in the middle of drawing.
     applyAction(action);
+    applyAction(setupAction);
 }
 
 void App::applyAction(ControlAction action) {
@@ -148,6 +132,12 @@ void App::applyAction(ControlAction action) {
             break;
         case ControlAction::Reset:
             resetSimulation();
+            break;
+        case ControlAction::FillGrid:
+            simulation.fillWorld(setup.getFillSettings());
+            break;
+        case ControlAction::SetWeather:
+            simulation.setWeather(setup.getWeatherType(), setup.getWeatherSteps());
             break;
         case ControlAction::None:
             break;

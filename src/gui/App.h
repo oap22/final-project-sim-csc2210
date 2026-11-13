@@ -7,7 +7,9 @@
 #include "gui/ControlAction.h"
 #include "gui/ControlPanel.h"
 #include "gui/GridView.h"
+#include "gui/KeyView.h"
 #include "gui/PopulationGraph.h"
+#include "gui/SetupPanel.h"
 #include "sim/Simulation.h"
 
 namespace eco {
@@ -31,13 +33,14 @@ private:
     void applyAction(ControlAction action);
     void resetSimulation();
     void loadFont();
-    void drawLabel(const char* text, int x, int y);
 
     Config config;
     Simulation simulation;
     GridView gridView;
     PopulationGraph graph;
     ControlPanel controls;
+    SetupPanel setup;
+    KeyView key;
     bool running;
     Font font{};
     bool fontLoaded = false;
