@@ -72,6 +72,8 @@ if(BUILD_GUI)
         src/gui/GridView.cpp
         src/gui/PopulationGraph.cpp
         src/gui/ControlPanel.cpp
+        src/gui/SetupPanel.cpp
+        src/gui/KeyView.cpp
         src/gui/BatchResultsView.cpp
     )
     target_include_directories(app PRIVATE ${raygui_SOURCE_DIR}/src)

@@ -23,6 +23,8 @@ public:
 private:
     Rectangle area{};
     int tileSize = 0;
+    int columns = 0;
+    int rows = 0;
 };
 
 } // namespace eco

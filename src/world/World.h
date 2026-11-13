@@ -6,6 +6,7 @@
 
 #include "entities/Animal.h"
 #include "core/Config.h"
+#include "world/FillSettings.h"
 #include "world/Grid.h"
 #include "world/PopulationCounts.h"
 #include "core/Position.h"
@@ -19,7 +20,10 @@ public:
     World(int width, int height);
 
     Grid& getGrid();
+    const Grid& getGrid() const;
     bool addAnimal(std::unique_ptr<Animal> animal);
+    void removeAnimalAt(Position pos);
+    void fill(const FillSettings& settings, Random& random, const Config& config);
     void addBirth(std::unique_ptr<Animal> baby);
     Animal* animalAt(Position pos) const; // Not the owner. Do not delete.
     bool isFree(Position pos) const;

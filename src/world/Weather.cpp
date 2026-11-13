@@ -2,12 +2,20 @@
 
 namespace eco {
 
+// Counts down the weather chosen with setWeather, then goes back to Normal.
 void Weather::update(Random& /*random*/) {
-    // TODO
+    // TODO: start random weather changes.
+    if (stepsLeft > 0) {
+        --stepsLeft;
+        if (stepsLeft == 0) {
+            type = WeatherType::Normal;
+        }
+    }
 }
 
-void Weather::setWeather(WeatherType /*type*/, int /*steps*/) {
-    // TODO
+void Weather::setWeather(WeatherType newType, int steps) {
+    type = newType;
+    stepsLeft = steps;
 }
 
 WeatherType Weather::getType() const {

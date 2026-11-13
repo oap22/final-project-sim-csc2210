@@ -9,7 +9,9 @@ enum class ControlAction {
     Start,
     Stop,
     StepOnce,
-    Reset
+    Reset,
+    FillGrid,
+    SetWeather
 };
 
 } // namespace eco

@@ -1,5 +1,7 @@
 #include "core/Random.h"
 
+#include <algorithm>
+
 namespace eco {
 
 Random::Random(unsigned seed) : engine(seed) {
@@ -16,8 +18,8 @@ bool Random::chance(double /*probability*/) {
     return false;
 }
 
-void Random::shuffle(std::vector<Position>& /*list*/) {
-    // TODO: put the list in a random order.
+void Random::shuffle(std::vector<Position>& list) {
+    std::shuffle(list.begin(), list.end(), engine);
 }
 
 } // namespace eco
