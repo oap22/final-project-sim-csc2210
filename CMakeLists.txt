@@ -104,6 +104,10 @@ FetchContent_Declare(doctest
 FetchContent_MakeAvailable(doctest)
 
 enable_testing()
-add_executable(unit_tests tests/test_main.cpp)
+add_executable(unit_tests
+    tests/test_main.cpp
+    tests/test_grid.cpp
+        tests/TestAnimal.cpp
+)
 target_link_libraries(unit_tests PRIVATE sim doctest::doctest)
 add_test(NAME unit_tests COMMAND unit_tests)

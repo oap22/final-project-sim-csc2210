@@ -21,9 +21,21 @@ bool Grid::inBounds(Position pos) const {
     return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
 }
 
-std::vector<Position> Grid::neighbors(Position /*pos*/) const {
-    // TODO: return the tiles around pos that are in bounds.
-    return {};
+std::vector<Position> Grid::neighbors(Position pos) const {
+    std::vector<Position> result;
+    for (int dy = -1; dy <= 1; ++dy) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            if (dx == 0 && dy == 0) {
+                continue;
+            }
+            Position next{pos.x + dx, pos.y + dy};
+            if (inBounds(next)) {
+                result.push_back(next);
+            }
+        }
+    }
+
+    return result;
 }
 
 int Grid::getWidth() const {

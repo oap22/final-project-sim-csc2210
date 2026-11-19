@@ -2,8 +2,8 @@
 
 namespace eco {
 
-void History::record(const PopulationCounts& /*counts*/) {
-    // TODO
+void History::record(const PopulationCounts& counts) {
+    records.push_back(counts);
 }
 
 const std::vector<PopulationCounts>& History::getRecords() const {
