@@ -12,9 +12,15 @@ Simulation::Simulation(const Config& config)
 }
 
 void Simulation::step() {
+    if (isFinished()) {
+        return;
+    }
     weather.update(random);
-    // TODO: the rest of the step.
+    world.step(random, config, weather.growthMultiplier());
     ++stepCount;
+    PopulationCounts counts = world.count();
+    counts.step = stepCount;
+    history.record(counts);
 }
 
 void Simulation::run(int /*steps*/) {
@@ -22,8 +28,7 @@ void Simulation::run(int /*steps*/) {
 }
 
 bool Simulation::isFinished() const {
-    // TODO
-    return false;
+    return stepLimit>0&&stepCount>=stepLimit;
 }
 
 int Simulation::getStepCount() const {
@@ -45,8 +50,8 @@ const Weather& Simulation::getWeather() const {
     return weather;
 }
 
-void Simulation::setStepLimit(int /*limit*/) {
-    // TODO
+void Simulation::setStepLimit(int limit) {
+    stepLimit = limit;
 }
 
 void Simulation::fillWorld(const FillSettings& settings) {

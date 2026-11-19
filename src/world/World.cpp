@@ -38,8 +38,8 @@ void World::removeAnimalAt(Position pos) {
                   animals.end());
 }
 
-void World::addBirth(std::unique_ptr<Animal> /*baby*/) {
-    // TODO
+void World::addBirth(std::unique_ptr<Animal> baby) {
+    births.push_back(std::move(baby));
 }
 
 // Replaces everything on the grid. Exact counts are placed on shuffled tiles,
@@ -82,7 +82,7 @@ void World::fill(const FillSettings& settings, Random& random, const Config& con
 
 Animal* World::animalAt(Position pos) const {
     for (const auto& animal : animals) {
-        if (animal->getPosition() == pos) {
+        if (animal->isAlive()&&animal->getPosition() == pos) {
             return animal.get();
         }
     }
@@ -93,8 +93,15 @@ bool World::isFree(Position pos) const {
     return grid.inBounds(pos) && animalAt(pos) == nullptr;
 }
 
-void World::step(Random& /*random*/, const Config& /*config*/, double /*growth*/) {
-    // TODO
+void World::step(Random& random, const Config& config, double growth) {
+    for (auto& animal : animals) {
+        if (animal->isAlive()) {
+            animal->act(*this, random, config);
+        }
+    }
+    removeDead(config);
+    addBirthsToWorld();
+    growPlants(random, config, growth);
 }
 
 // World does not know the step number, so counts.step stays 0 here.
@@ -124,12 +131,28 @@ void World::growPlants(Random& /*random*/, const Config& /*config*/, double /*gr
     // TODO
 }
 
-void World::removeDead(const Config& /*config*/) {
-    // TODO
+void World::removeDead(const Config& config) {
+    for (const auto& animal : animals) {
+        if (!animal->isAlive()) {
+            grid.at(animal->getPosition()).nutrients +=
+                config.deathNutrients;
+        }
+    }
+
+    animals.erase(
+        std::remove_if(animals.begin(), animals.end(),
+            [](const std::unique_ptr<Animal>& animal) {
+                return !animal->isAlive();
+            }),
+        animals.end()
+    );
 }
 
 void World::addBirthsToWorld() {
-    // TODO
+    for (auto& baby : births) {
+        addAnimal(std::move(baby));
+    }
+    births.clear();
 }
 
 } // namespace eco
