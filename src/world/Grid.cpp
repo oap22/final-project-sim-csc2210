@@ -4,8 +4,13 @@
 
 namespace eco {
 
-Grid::Grid(int width, int height) : width(width), height(height), tiles(width * height) {
-    // TODO: throw std::invalid_argument if width or height is 0 or less.
+Grid::Grid(int w, int h) {
+    if (w <= 0 || h <= 0) {
+        throw std::invalid_argument("Width and height must be greater than 0");
+    }
+    width = w;
+    height = h;
+    tiles.resize(static_cast<std::size_t>(w) * static_cast<std::size_t>(h));
 }
 
 // Tiles are stored row after row in one vector.
@@ -34,17 +39,14 @@ std::vector<Position> Grid::neighbors(Position pos) const {
             }
         }
     }
-
     return result;
 }
 
 int Grid::getWidth() const {
-    // TODO
     return width;
 }
 
 int Grid::getHeight() const {
-    // TODO
     return height;
 }
 
