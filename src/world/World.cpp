@@ -127,8 +127,62 @@ PopulationCounts World::count() const {
     return counts;
 }
 
-void World::growPlants(Random& /*random*/, const Config& /*config*/, double /*growth*/) {
-    // TODO
+void World::growPlants(Random& random, const Config& config, double growth) {
+  // Growth rate and weather come from `growth` (Simulation passes weather multiplier).
+  // Flower density uses plant count at the start of this step.
+  const PopulationCounts counts = count();
+  spreadGrass(random, config, growth);
+  growFlowers(random, config, growth, counts.plants);
+}
+
+void World::spreadGrass(Random& random, const Config& config, double growth) {
+  const double rate = std::min(1.0, config.grassSpreadChance * growth);
+  if (rate <= 0.0) {
+    return;
+  }
+
+  for (int y = 0; y < grid.getHeight(); ++y) {
+    for (int x = 0; x < grid.getWidth(); ++x) {
+      const Position pos{x, y};
+      if (grid.at(pos).type == TileType::Grass) {
+        for (const Position neighbor : grid.neighbors(pos)) {
+          Tile& tile = grid.at(neighbor);
+          if (tile.type == TileType::Dirt && animalAt(neighbor) == nullptr &&
+              random.chance(rate)) {
+            tile.type = TileType::Grass;
+          }
+        }
+      }
+    }
+  }
+}
+
+void World::growFlowers(Random& random, const Config& config, double growth,
+                        int plantCount) {
+  const int totalTiles = grid.getWidth() * grid.getHeight();
+  if (totalTiles <= 0) {
+    return;
+  }
+  // Fewer blooms when the map already has many flowers.
+  const double density =
+      std::max(0.0, 1.0 - static_cast<double>(plantCount) / totalTiles);
+  const double rate =
+      std::min(1.0, config.plantSpreadChance * growth * density);
+  if (rate <= 0.0) {
+    return;
+  }
+
+  for (int y = 0; y < grid.getHeight(); ++y) {
+    for (int x = 0; x < grid.getWidth(); ++x) {
+      const Position pos{x, y};
+      if (grid.at(pos).type != TileType::Grass || animalAt(pos) != nullptr) {
+        continue;
+      }
+      if (random.chance(rate)) {
+        grid.at(pos).type = TileType::Plant;
+      }
+    }
+  }
 }
 
 void World::removeDead(const Config& config) {

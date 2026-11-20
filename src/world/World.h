@@ -32,6 +32,8 @@ public:
 
 private:
     void growPlants(Random& random, const Config& config, double growth);
+    void spreadGrass(Random& random, const Config& config, double growth);
+    void growFlowers(Random& random, const Config& config, double growth, int plantCount);
     void removeDead(const Config& config);
     void addBirthsToWorld();
 
