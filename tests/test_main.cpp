@@ -323,3 +323,55 @@ TEST_CASE("Simulation steps count down the weather") {
     simulation.step();
     CHECK(simulation.getWeather().getType() == WeatherType::Normal);
 }
+
+TEST_CASE("flowers never appear on dirt without grass") {
+    World world(5, 5);
+    Random random(1);
+    Config config = smallConfig();
+    config.grassSpreadChance = 0.0;
+    config.plantSpreadChance = 1.0;
+
+    world.step(random, config, 1.0);
+
+    CHECK(countGround(world, TileType::Plant) == 0);
+    CHECK(countGround(world, TileType::Grass) == 0);
+}
+
+TEST_CASE("grass spreads to neighboring dirt") {
+    World world(3, 1);
+    world.getGrid().at({0, 0}).type = TileType::Grass;
+    Random random(7);
+    Config config = smallConfig();
+    config.grassSpreadChance = 1.0;
+    config.plantSpreadChance = 0.0;
+
+    world.step(random, config, 1.0);
+
+    CHECK(world.getGrid().at({1, 0}).type == TileType::Grass);
+    CHECK(world.getGrid().at({2, 0}).type == TileType::Grass);
+}
+
+TEST_CASE("flowers grow from grass tiles") {
+    World world(1, 1);
+    world.getGrid().at({0, 0}).type = TileType::Grass;
+    Random random(3);
+    Config config = smallConfig();
+    config.grassSpreadChance = 0.0;
+    config.plantSpreadChance = 1.0;
+
+    world.step(random, config, 1.0);
+
+    CHECK(world.getGrid().at({0, 0}).type == TileType::Plant);
+}
+
+TEST_CASE("zero growth multiplier stops plant spread") {
+    World world(1, 1);
+    world.getGrid().at({0, 0}).type = TileType::Grass;
+    Random random(3);
+    Config config = smallConfig();
+    config.plantSpreadChance = 1.0;
+
+    world.step(random, config, 0.0);
+
+    CHECK(world.getGrid().at({0, 0}).type == TileType::Grass);
+}
